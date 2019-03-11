@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+<head>
+    <meta charset="utf-8">
+</head>
+<body style="height: 100%; margin: 0">
+<div id="container" style="height: 100%"></div>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
+<script type="text/javascript"
+        src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
+<script type="text/javascript"
+        src="https://api.map.baidu.com/api?v=2.0&ak=VmwYjpzAE4oOMctzmGeM1GYS06izIi4V&__ec_v__=15740973"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/simplex.js"></script>
+<script type="text/javascript">
+var dom = document.getElementById("container");
+var myChart = echarts.init(dom);
+var app = {};
+option = null;
+var data = [["2019-03-13 10:12:32", "41"], ["2019-03-13 10:13:02", "34"], ["2019-03-13 10:13:32", "31"], ["2019-03-13 10:14:02", "47"], ["2019-03-13 10:14:32", "60"], ["2019-03-13 10:15:02", "54"], ["2019-03-13 10:15:33", "35"], ["2019-03-13 10:16:03", "30"], ["2019-03-13 10:16:33", "27"], ["2019-03-13 10:17:03", "25"], ["2019-03-13 10:17:33", "24"], ["2019-03-13 10:18:03", "23"], ["2019-03-13 10:18:33", "20"], ["2019-03-13 10:19:03", "18"], ["2019-03-13 10:19:33", "18"], ["2019-03-13 10:20:03", "16"], ["2019-03-13 10:20:33", "16"], ["2019-03-13 10:21:03", "15"], ["2019-03-13 10:21:33", "15"], ["2019-03-13 10:22:03", "14"], ["2019-03-13 10:22:33", "14"], ["2019-03-13 10:23:03", "13"], ["2019-03-13 10:23:33", "15"], ["2019-03-13 10:24:03", "35"], ["2019-03-13 10:24:33", "47"], ["2019-03-13 10:25:03", "42"], ["2019-03-13 10:25:33", "23"], ["2019-03-13 10:26:03", "19"], ["2019-03-13 10:26:33", "16"], ["2019-03-13 10:27:04", "16"], ["2019-03-13 10:27:34", "16"], ["2019-03-13 10:28:04", "16"], ["2019-03-13 10:28:34", "15"], ["2019-03-13 10:29:04", "15"], ["2019-03-13 10:29:34", "14"], ["2019-03-13 10:30:04", "13"], ["2019-03-13 10:30:34", "12"], ["2019-03-13 10:31:04", "12"], ["2019-03-13 10:31:34", "12"], ["2019-03-13 10:32:04", "12"], ["2019-03-13 10:32:29", "10"], ["2019-03-13 10:32:59", "9"], ["2019-03-13 10:33:29", "9"], ["2019-03-13 10:33:50", "30"], ["2019-03-13 10:34:20", "23"], ["2019-03-13 10:34:50", "21"], ["2019-03-13 10:35:20", "47"], ["2019-03-13 10:35:51", "64"], ["2019-03-13 10:36:21", "60"], ["2019-03-13 10:36:51", "55"], ["2019-03-13 10:37:21", "64"], ["2019-03-13 10:37:51", "78"], ["2019-03-13 10:38:22", "74"], ["2019-03-13 10:38:52", "63"], ["2019-03-13 10:39:22", "59"], ["2019-03-13 10:39:52", "56"], ["2019-03-13 10:40:22", "50"], ["2019-03-13 10:40:33", "49"], ["2019-03-13 10:41:03", "48"], ["2019-03-13 10:41:33", "29"], ["2019-03-13 10:41:46", "36"], ["2019-03-13 10:42:16", "28"], ["2019-03-13 10:42:19", "28"], ["2019-03-13 10:42:49", "27"], ["2019-03-13 10:43:19", "24"], ["2019-03-13 10:43:49", "49"], ["2019-03-13 10:44:19", "78"], ["2019-03-13 10:44:49", "72"], ["2019-03-13 10:45:19", "65"], ["2019-03-13 10:45:49", "59"], ["2019-03-13 10:46:19", "53"], ["2019-03-13 10:46:49", "50"], ["2019-03-13 10:47:19", "47"], ["2019-03-13 10:47:49", "45"], ["2019-03-13 10:47:57", "45"], ["2019-03-13 10:48:27", "44"], ["2019-03-13 10:48:33", "43"]];
+
+function (data) {
+    myChart.setOption(option = {
+        title: {
+            text: 'Beijing AQI'
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        xAxis: {
+            data: data.map(function (item) {
+                return item[0];
+            })
+        },
+        yAxis: {
+            splitLine: {
+                show: false
+            }
+        },
+        toolbox: {
+            left: 'center',
+            feature: {
+                dataZoom: {
+                    yAxisIndex: 'none'
+                },
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+        dataZoom: [{
+            startValue: '2014-06-01'
+        }, {
+            type: 'inside'
+        }],
+        visualMap: {
+            top: 10,
+            right: 10,
+            pieces: [{
+                gt: 0,
+                lte: 50,
+                color: '#096'
+            }, {
+                gt: 50,
+                lte: 100,
+                color: '#ffde33'
+            }, {
+                gt: 100,
+                lte: 150,
+                color: '#ff9933'
+            }, {
+                gt: 150,
+                lte: 200,
+                color: '#cc0033'
+            }, {
+                gt: 200,
+                lte: 300,
+                color: '#660099'
+            }, {
+                gt: 300,
+                color: '#7e0023'
+            }],
+            outOfRange: {
+                color: '#999'
+            }
+        },
+        series: {
+            name: 'Beijing AQI',
+            type: 'line',
+            data: data.map(function (item) {
+                return item[1];
+            }),
+            markLine: {
+                silent: true,
+                data: [{
+                    yAxis: 50
+                }, {
+                    yAxis: 100
+                }, {
+                    yAxis: 150
+                }, {
+                    yAxis: 200
+                }, {
+                    yAxis: 300
+                }]
+            }
+        }
+    });
+};
+if (option && typeof option === "object") {
+    myChart.setOption(option, true);
+}
+
+</script>
+</body>
+</html>

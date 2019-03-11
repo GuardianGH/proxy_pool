@@ -15,12 +15,12 @@ __author__ = 'JHao'
 
 import sys
 from werkzeug.wrappers import Response
-from flask import Flask, jsonify, request
-
-sys.path.append('../')
-
+from flask import Flask, render_template, jsonify, request
+from DB.mysql_connector import OpenMySQL as conn
 from Config.ConfigGetter import config
 from Manager.ProxyManager import ProxyManager
+
+sys.path.append('../')
 
 app = Flask(__name__)
 
@@ -35,6 +35,7 @@ class JsonResponse(Response):
 
 
 app.response_class = JsonResponse
+app.jinja_env.auto_reload = True
 
 api_list = {
     'get': u'get an usable proxy',
@@ -44,10 +45,34 @@ api_list = {
     'get_status': u'proxy statistics'
 }
 
+db = conn()
+
+
+def get_data():
+    data = db.select_all(sql="""select date_time, count from proxy_time_table;""", db="proxy")
+    if data:
+        datetime = []
+        count = []
+        dic = dict()
+        for i in data:
+            datetime.append(str(i.get("date_time")))
+            count.append(str(i.get("count")))
+        dic["date_time"] = datetime
+        dic["count"] = count
+        return dic
+
 
 @app.route('/')
 def index():
     return api_list
+
+
+@app.route('/chart/')
+def chart():
+    data = get_data()
+    date_time = data.get("date_time")
+    count = data.get("count")
+    return render_template("./show.html", date_time=date_time, count=count)
 
 
 @app.route('/get/')

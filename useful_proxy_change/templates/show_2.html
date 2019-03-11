@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+<head>
+    <meta charset="utf-8">
+    <title>可用代理</title>
+</head>
+<body style="height: 100%; margin: 0">
+<div style="height:50px;background-color:#218868;" align="center">
+    <a id="count_addr" href="http://6rg8a9o8kt.gzhttp.cn/get_status/"
+       style="text-decoration:none;font-size:30px;color:snow;">
+        可用代理数量
+    </a>
+    <span style="font-size:30px;color:snow;text-align: center;">
+            &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+       </span>
+    <a id="all_addr" href="http://6rg8a9o8kt.gzhttp.cn/get_all/"
+       style="text-decoration:none;font-size:30px;color:snow;">
+        可用代理地址
+    </a>
+</div>
+
+<div id="container" style="height: 90%"></div>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
+<script type="text/javascript"
+        src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
+<script type="text/javascript"
+        src="https://api.map.baidu.com/api?v=2.0&ak=VmwYjpzAE4oOMctzmGeM1GYS06izIi4V&__ec_v__=15740973"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/simplex.js"></script>
+<script type="text/javascript">
+var dom = document.getElementById("container");
+var myChart = echarts.init(dom);
+var app = {};
+option = null;
+function format(data) {
+    start = data[data.length-90][0];
+    return start;
+};
+
+function fun(data) {
+    myChart.setOption(option = {
+        title: {
+            text: '可用代理变化情况（底栏滚动条可自由缩放）'
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        xAxis: {
+            data: data.map(function (item) {
+                return item[0];
+            })
+        },
+        yAxis: {
+            splitLine: {
+                show: false
+            }
+        },
+        toolbox: {
+            left: 'center',
+            feature: {
+                dataZoom: {
+                    yAxisIndex: 'none'
+                },
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+        dataZoom: [{
+            startValue: format(data)
+        }, {
+            type: 'inside'
+        }],
+        visualMap: {
+            top: 10,
+            right: 10,
+            pieces: [{
+                gt: 0,
+                lte: {{ data.avg }},
+                color: '#ffde33'
+            }, {
+                gt: {{ data.avg }},
+                color: '#096'
+            }],
+            outOfRange: {
+                color: '#999'
+            }
+        },
+        series: [{
+            name: {{data.min_status}} + '分钟平均可用代理数：',
+            type: 'line',
+            data: data.map(function (item) {
+                return item[1];
+            }),
+            smooth: true,
+            markLine: {
+                silent: true,
+                data: [{
+                    yAxis: {{ data.avg }},
+                },
+                {type : 'average', name: '平均值'}
+                ]
+            },
+            markPoint: {
+                data: [
+                    {type: 'max', name: '最大值'},
+                    {type: 'min', name: '最小值'}
+                ]
+            }
+        }]
+    });
+};
+fun({{ data.data | tojson }});
+
+if (option && typeof option === "object") {
+    myChart.setOption(option, true);
+}
+
+</script>
+</body>
+</html>

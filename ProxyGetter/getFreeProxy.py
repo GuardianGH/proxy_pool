@@ -11,8 +11,11 @@
                    2016/11/25:
 -------------------------------------------------
 """
+import datetime
 import re
 import sys
+import time
+
 import requests
 
 sys.path.append('..')
@@ -283,6 +286,67 @@ class GetFreeProxy(object):
             proxies = re.findall(r'<td>(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})</td>[\s\S]*?<td>(\d+)</td>', r.text)
             for proxy in proxies:
                 yield ':'.join(proxy)
+
+    @staticmethod
+    def freeProxy_31f():
+        urls = ['http://31f.cn/http-proxy/']
+        request = WebRequest()
+        for url in urls:
+            r = request.get(url, timeout=10)
+            p_raw = re.findall(r'table table-striped([\s\S]+?)</table>', r.text)[0]
+            proxies = re.findall('<td>\d{1,2}</td>[^<]<td> *([\d\.]+) *</td>[^<]<td> *([\d]+) *</td>', p_raw)
+            for proxy in proxies:
+                yield ':'.join(proxy)
+
+    @staticmethod
+    def freeProxy_ZGIP():
+        urls = ['https://cn-proxy.com/']
+        request = WebRequest()
+        for url in urls:
+            r = request.get(url, timeout=10)
+            p_raw = re.findall(r'<table class="sortable">([\s\S]+?)</table>', r.text)
+            for proxy_table in p_raw:
+                proxies = re.findall('<td> ?([\d\.]+) ?</td>[^<]<td> ?([\d]+)', proxy_table)
+                for proxy in proxies:
+                    yield ':'.join(proxy)
+
+    @staticmethod
+    def freeProxy_HeiDong_DayFree():
+        urls = [
+            'http://ip.11jsq.com/index.php/api/entry?method=proxyServer.tiqu_api_url&packid=1&fa=0&qty=10&port=1&format=json&ss=5&css=&ipport=1&et=1&pro=&city=']
+        for url in urls:
+            response = requests.get(url=url)
+            res = response.json()
+            if res.get('success') == 'true':
+                proxies = res.get('data')
+                for proxy_dic in proxies:
+                    proxy = proxy_dic.get('IP')
+                    yield proxy
+
+    @staticmethod
+    def freeProxy_MaYi():
+        request = WebRequest()
+
+        def count_num():
+            day_stander = time.strptime('2019-03-14', "%Y-%m-%d")
+            date_stander = datetime.datetime(day_stander[0], day_stander[1], day_stander[2])
+            day_now = time.localtime()
+            date_now = datetime.datetime(day_now[0], day_now[1], day_now[2])
+            days = str(date_now - date_stander)
+            if 'day' in days:
+                days = int(days.split(",")[0].split(" ")[0])
+            else:
+                days = 0
+            return days
+
+        count_base = 1398 + count_num()
+        url_base = "http://www.mayidaili.com/share/view/" + str(count_base) + "/"
+        r = request.get(url_base, timeout=10)
+        p_raw = re.findall(r'<p>([\s\S]+?)</br></br></p>', r.text)
+        for proxy_table in p_raw:
+            proxies = [re.sub('<[^>]+>', '', x) for x in re.findall('>([^#]+?)#', proxy_table)]
+            for proxy in proxies:
+                yield proxy
 
 
 if __name__ == '__main__':

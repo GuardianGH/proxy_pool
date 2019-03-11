@@ -44,7 +44,7 @@ pip install -r requirements.txt
 ```shell
 # Config/setting.py 为项目配置文件
 
-# 配置DB     
+# 配置DB     ~/下载/proxy_pool-master-3.11/proxy_pool/
 DATABASES = {
     "default": {
         "TYPE": "SSDB",        # 如果使用SSDB或redis数据库，均配置为SSDB

@@ -113,5 +113,5 @@ class SsdbClient(object):
 
 
 if __name__ == '__main__':
-    c = SsdbClient(name='useful_proxy', host='127.0.0.1', port=8899, password=None)
+    c = SsdbClient(name='useful_proxy', host='127.0.0.1', port=8888, password=None)
     print(c.getAll())

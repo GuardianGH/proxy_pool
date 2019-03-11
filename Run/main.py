@@ -21,6 +21,8 @@ sys.path.append('..')
 from Api.ProxyApi import run as ProxyApiRun
 from Schedule.ProxyValidSchedule import run as ValidRun
 from Schedule.ProxyRefreshSchedule import run as RefreshRun
+from useful_proxy_change.flask_show import run as ShowRun
+from DB.schedul import run as ScheduleRun
 
 
 def run():
@@ -31,6 +33,10 @@ def run():
     p_list.append(p2)
     p3 = Process(target=RefreshRun, name='RefreshRun')
     p_list.append(p3)
+    # p4 = Process(target=ShowRun, name='ShowRun')
+    # p_list.append(p4)
+    p5 = Process(target=ScheduleRun, name='ScheduleRun')
+    p_list.append(p5)
 
     for p in p_list:
         p.daemon = True
